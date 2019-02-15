@@ -33,20 +33,21 @@ def predict_series_mean(train, test):
         means.append(sum([row[-1] for row in train][i:i+n])/n)
     return sum(means)/len(means)
 
-seed(1)
-train = [[0], [1], [0], [1], [0], [1]]
-test = [[None], [None], [None], [None]]
-predictions = random_algorithm(train, test)
-print(predictions)
-predictions = zero_rule_algorithm_classification(train, test)
-print(predictions)
-train = [[10], [10], [12], [15], [18], [20]]
-predictions = zero_rule_algorithm_regression(train, test)
-print(predictions)
-predictions = zero_rule_algorithm_regression(train, test, 'mode')
-print(predictions)
-predictions = zero_rule_algorithm_regression(train, test, 'median')
-print(predictions)
-predictions = predict_series_mean(train, [[None], [None], [None]])
-print(predictions)
+if __name__ == '__main__':
+    seed(1)
+    train = [[0], [1], [0], [1], [0], [1]]
+    test = [[None], [None], [None], [None]]
+    predictions = random_algorithm(train, test)
+    print(predictions)
+    predictions = zero_rule_algorithm_classification(train, test)
+    print(predictions)
+    train = [[10], [10], [12], [15], [18], [20]]
+    predictions = zero_rule_algorithm_regression(train, test)
+    print(predictions)
+    predictions = zero_rule_algorithm_regression(train, test, 'mode')
+    print(predictions)
+    predictions = zero_rule_algorithm_regression(train, test, 'median')
+    print(predictions)
+    predictions = predict_series_mean(train, [[None], [None], [None]])
+    print(predictions)
 

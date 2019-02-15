@@ -1,9 +1,16 @@
 from csv import reader
 import sys
 sys.path.append('../DataScaling')
+sys.path.append('../Baseline')
+sys.path.append('../TestHarness')
+sys.path.append('../AlgEvaluation')
+sys.path.append('../EvalMetrics')
 from normalize import dataset_minmax, normalize_dataset
 from standardize import column_means, column_stdevs, standardize_dataset
-
+from baseline import zero_rule_algorithm_classification
+from testharness import evaluate_algorithm
+from split import train_test_split, cross_validation_split
+from evalmetrics import accuracy_metric, mae_metric
 def load_csv(filename):
     dataset = list()
     with open(filename, 'r') as file:
@@ -49,10 +56,28 @@ print('Loaded data file {0} with {1} rows and {2} columns'.format(filename, len(
 for i in range(len(dataset[0])):
     str_column_to_float(dataset, i)
 print(dataset[0])
+split = 0.6
+accuracy = evaluate_algorithm(dataset, zero_rule_algorithm_classification, (train_test_split,split), accuracy_metric)
+print('Accuracy: %.3f%%' % (accuracy))
 
-#minmax = dataset_minmax(dataset)
+n_folds = 5
+scores = evaluate_algorithm(dataset, zero_rule_algorithm_classification, (cross_validation_split, n_folds), accuracy_metric)
 
-#normalize_dataset(dataset, minmax)
+print('Scores: %s' % scores)
+print('Mean Accuracy: %.3f%%' % (sum(scores)/len(scores)))
+
+score_dev = column_stdevs([[s] for s in scores], [(sum(scores)/len(scores))])
+
+print('Standard deviation ', score_dev)
+
+
+scores = evaluate_algorithm(dataset, zero_rule_algorithm_classification, (cross_validation_split, n_folds), mae_metric)
+
+
+print('Mae scores: %s' % scores)
+print('Mean absolute error: %.3f' % (sum(scores)/len(scores)))
+
+
 means = column_means(dataset)
 stdevs = column_stdevs(dataset, means)
 standardize_dataset(dataset, means, stdevs)

@@ -22,10 +22,11 @@ def cross_validation_split(dataset, folds=3):
         dataset_split.append(fold)
     return dataset_split
 
-seed(1)
-dataset = [[i] for i in range(1,11)]
-train, test = train_test_split(dataset)
-print(train)
-print(test)
-folds = cross_validation_split(dataset, 4)
-print(folds)
+if __name__ == '__main__':
+    seed(1)
+    dataset = [[i] for i in range(1,11)]
+    train, test = train_test_split(dataset)
+    print(train)
+    print(test)
+    folds = cross_validation_split(dataset, 4)
+    print(folds)

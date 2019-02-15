@@ -46,35 +46,37 @@ def chi_sqr(expected, predicted):
 
 def rmse_metric(actual, predicted):
     return sqrt(sum([abs(p-a)**2 for a, p in zip(actual, predicted)]) / float(len(actual)))
-actual = [0,0,0,0,0,1,1,1,1,1]
-predicted = [0,1,0,0,0,1,0,0,1,1]
-accuracy = accuracy_metric(actual, predicted)
-print(accuracy)
 
-lookup, matrix = confusion_matrix(actual, predicted)
-print_confusion_matrix(set(lookup.values()), matrix)
+if __name__ == '__main__':
+    actual = [0,0,0,0,0,1,1,1,1,1]
+    predicted = [0,1,0,0,0,1,0,0,1,1]
+    accuracy = accuracy_metric(actual, predicted)
+    print(accuracy)
 
-print(precision(1, lookup, matrix))
-print(recall(1, lookup, matrix))
-print(f1(1, lookup, matrix))
+    lookup, matrix = confusion_matrix(actual, predicted)
+    print_confusion_matrix(set(lookup.values()), matrix)
 
-print(precision(0, lookup, matrix))
-print(recall(0, lookup, matrix))
-print(f1(0, lookup, matrix))
+    print(precision(1, lookup, matrix))
+    print(recall(1, lookup, matrix))
+    print(f1(1, lookup, matrix))
 
-actual = [i/10.0 for i in range(1,6)]
-predicted = [0.11, 0.19, 0.29, 0.41, 0.5]
-mae = mae_metric(actual, predicted)
-print(mae)
+    print(precision(0, lookup, matrix))
+    print(recall(0, lookup, matrix))
+    print(f1(0, lookup, matrix))
 
-rmse = rmse_metric(actual, predicted)
-print(rmse)
+    actual = [i/10.0 for i in range(1,6)]
+    predicted = [0.11, 0.19, 0.29, 0.41, 0.5]
+    mae = mae_metric(actual, predicted)
+    print(mae)
 
-fps = [0.0, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
-tps = [0.2, 0.5, 0.6, 0.8, 0.85, 0.9, 1]
+    rmse = rmse_metric(actual, predicted)
+    print(rmse)
 
-auc = auc(fps, tps)
-print(auc)
+    fps = [0.0, 0.2, 0.4, 0.6, 0.8, 0.9, 1]
+    tps = [0.2, 0.5, 0.6, 0.8, 0.85, 0.9, 1]
 
-chi_sqr = chi_sqr([20, 20, 30, 40, 60, 30], [30, 14, 34, 45, 57, 20])
-print(chi_sqr)
+    auc = auc(fps, tps)
+    print(auc)
+
+    chi_sqr = chi_sqr([20, 20, 30, 40, 60, 30], [30, 14, 34, 45, 57, 20])
+    print(chi_sqr)
