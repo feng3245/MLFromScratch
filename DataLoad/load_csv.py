@@ -5,16 +5,18 @@ sys.path.append('../Baseline')
 sys.path.append('../TestHarness')
 sys.path.append('../AlgEvaluation')
 sys.path.append('../EvalMetrics')
+sys.path.append('../Regression')
 from normalize import dataset_minmax, normalize_dataset
 from standardize import column_means, column_stdevs, standardize_dataset
 from baseline import zero_rule_algorithm_classification
 from testharness import evaluate_algorithm
 from split import train_test_split, cross_validation_split
-from evalmetrics import accuracy_metric, mae_metric
-def load_csv(filename):
+from evalmetrics import accuracy_metric, mae_metric, rmse_metric
+from regression import linear_regression_sgd
+def load_csv(filename, delimiter = ','):
     dataset = list()
     with open(filename, 'r') as file:
-        csv_reader = reader(file)
+        csv_reader = reader(file, delimiter=delimiter)
         for row in csv_reader:
             if row:
                 dataset.append(row)
@@ -83,3 +85,22 @@ stdevs = column_stdevs(dataset, means)
 standardize_dataset(dataset, means, stdevs)
 print(dataset[0])
 
+filename = 'winequality-white.csv'
+dataset = load_csv(filename, ';')[1:]
+for i in range(len(dataset[0])):
+    str_column_to_float(dataset, i)
+
+minmax = dataset_minmax(dataset)
+#normalize_dataset(dataset, minmax)
+means = column_means(dataset)
+standardize_dataset(dataset, means, column_stdevs(dataset, means))
+minmax = dataset_minmax(dataset)
+normalize_dataset(dataset, minmax)
+
+n_folds = 5
+l_rate = 0.000001
+n_epoch = 5000
+
+scores = evaluate_algorithm(dataset, linear_regression_sgd, (cross_validation_split, n_folds), rmse_metric, l_rate, n_epoch)
+print('Scores: %s' % scores)
+print('Mean RMSE: %.3f' % (sum(scores)/float(len(scores))))

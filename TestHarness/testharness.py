@@ -13,7 +13,7 @@ def evaluate_algorithm(dataset, algorithm, splitmethod, metric, *args):
         return metric(actual, predicted)
     else:
         folds = splitres
-        return [metric([row[-1] for row in fold], algorithm(sum(folds[:i]+folds[i+1:], []), [row[:-1]+[None] for row in fold])) for i, fold in enumerate(folds)]
+        return [metric([row[-1] for row in fold], algorithm(sum(folds[:i]+folds[i+1:], []), [row[:-1]+[None] for row in fold], *args)) for i, fold in enumerate(folds)]
 
 
 
