@@ -1,4 +1,5 @@
-from math import sqrt
+from math import sqrt, log
+import sys
 def accuracy_metric(actual, predicted):
     return sum([a == p for a, p in zip(actual, predicted)])/float(len(actual)) * 100.0
 
@@ -14,6 +15,17 @@ def confusion_matrix(actual, predicted):
         y = lookup[p]
         matrix[y][x] += 1
     return lookup, matrix
+
+def cross_entropy_loss(actual, predicted):
+    #Will have to rework this for multiple classes with one hot encoding
+    return sum([cross_entropy(yhat, y) for y, yhat in zip(actual, predicted)])
+
+def cross_entropy(yHat, y):
+    if y == 1:
+        return -log(yHat if yHat != 0 else sys.float_info.min)
+    else:
+        return -log((1-yHat) if yHat != 1 else sys.float_info.min)
+
 
 def precision(xi, lookup, matrix):
     index = lookup[xi]
