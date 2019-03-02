@@ -9,6 +9,7 @@ sys.path.append('../EvalMetrics')
 sys.path.append('../Regression')
 sys.path.append('../Perceptron')
 sys.path.append('../CART')
+sys.path.append('../NaiveBayes')
 from normalize import dataset_minmax, normalize_dataset
 from standardize import column_means, column_stdevs, standardize_dataset
 from baseline import zero_rule_algorithm_classification
@@ -18,6 +19,7 @@ from evalmetrics import accuracy_metric, mae_metric, rmse_metric, cross_entropy_
 from regression import linear_regression_sgd
 from perceptron import perceptron
 from cart import decision_tree, get_leaves, prune_tree, build_tree
+from naiveBayes import naive_bayes
 def load_csv(filename, delimiter = ','):
     dataset = list()
     with open(filename, 'r') as file:
@@ -167,7 +169,7 @@ print('Scores: %s' % scores)
 print('Log loss: %s' % (sum(scores)/float(len(scores))))
 
 
-train, test = train_test_split(dataset, 0.75)
+train, test = train_test_split(dataset, 0.2)
 tree = build_tree(train, max_depth, min_size)
 scores = evaluate_algorithm(dataset, decision_tree, (cross_validation_split, n_folds), accuracy_metric, max_depth, min_size, tree)
 
@@ -185,3 +187,43 @@ for i in range(1, max_depth):
         
 
 print('Pruned Mean Accuracy: %.3f%%' % current_best)
+
+filename = 'sonar.all-data.csv'
+dataset = load_csv(filename)
+for i in range(len(dataset[0])-1):
+    str_column_to_float(dataset, i)
+
+str_column_to_int(dataset, len(dataset[0])-1)
+
+train, test = train_test_split(dataset, 0.75)
+tree = build_tree(train, max_depth, min_size)
+scores = evaluate_algorithm(dataset, decision_tree, (cross_validation_split, n_folds), accuracy_metric, max_depth, min_size, tree)
+
+bestavg = sum(scores)/float(len(scores))
+
+print('Existing average accuracy: %.3f%%' % bestavg)
+current_best = bestavg
+for i in range(1, max_depth):
+    for j in range(len(get_leaves(tree, max_depth - i+1))):
+        trimedtree = prune_tree(tree, max_depth - i + 1, j)
+        scores = evaluate_algorithm(dataset, decision_tree, (cross_validation_split, n_folds), accuracy_metric, max_depth, min_size, trimedtree)
+        if sum(scores)/float(len(scores)) > current_best:
+            current_best = sum(scores)/float(len(scores))
+            tree = trimedtree
+
+print('Pruned Mean Accuracy: %.3f%%' % current_best)
+seed(1)
+
+filename = 'iris.data.csv'
+dataset = load_csv(filename)
+
+for i in range(len(dataset[0])-1):
+    str_column_to_float(dataset, i)
+
+str_column_to_int(dataset, len(dataset[0])-1)
+
+n_folds = 5
+scores = evaluate_algorithm(dataset, naive_bayes, (cross_validation_split, n_folds), accuracy_metric)
+print('Scores: %s' % scores)
+print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+
