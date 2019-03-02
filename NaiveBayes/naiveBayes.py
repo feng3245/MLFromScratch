@@ -20,9 +20,12 @@ def summarize_by_class(dataset):
     return summaries
 def calculate_probability(x, mean, stdev, col):
     if isinstance(x, int):
-        return col.count(x)/float(len(col))
+        return 1-log(2-(col.count(x)/float(len(col))))
     exponent = exp(-((x-mean)**2/(2*stdev**2)))
-    return 1-log(2-(1/ (sqrt(2*pi)*stdev))*exponent)
+    prob = ((1/ (sqrt(2*pi)*stdev))*exponent)
+    if prob >= 1:
+        return 1 
+    return 1-log(2-((1/ (sqrt(2*pi)*stdev))*exponent))
 
 def calculate_class_probabilities(summaries, row):
     total_rows = sum([summary[0][2] for label, summary in summaries.items()])
