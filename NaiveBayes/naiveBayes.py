@@ -24,7 +24,8 @@ def calculate_probability(x, mean, stdev, col):
     exponent = exp(-((x-mean)**2/(2*stdev**2)))
     prob = ((1/ (sqrt(2*pi)*stdev))*exponent)
     if prob >= 1:
-        return 1 
+        print(prob)
+        return 1
     return 1-log(2-((1/ (sqrt(2*pi)*stdev))*exponent))
 
 def calculate_class_probabilities(summaries, row):
@@ -62,7 +63,7 @@ if __name__ == '__main__':
         for row in separated[label]:
             print(row)
     summary = summarize_dataset(dataset)
-    print(summary)
+    print('summaries: ',summary)
     summary = summarize_by_class(dataset)
     for label in summary:
         print(label)
